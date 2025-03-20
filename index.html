@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        
+        .hecho{
+            text-decoration:line-through;
+            color: red;
+            font-weight: bolder;
+        }
+
+        .pepino{
+            display: grid;
+            grid-template-columns: 200px 200px;
+            background-color: rgba(0, 0, 255, 0.169);
+        }
+
+        .pepino > button{
+            width: 100px;
+        }
+
+        h1{
+            text-align: center;
+            background-color: rgba(0, 0, 255, 0.364);
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+
+        .alinear{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 0, 0, 0.364);
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+
+        .alinear > button{
+            margin-left: 20px;
+            width: 150px;
+        }
+
+        .alinear > input{
+            width: 250px;
+        }
+
+    </style>
+
+</head>
+<body>
+    <h1>Mi todo List</h1>
+    <div class="alinear">
+        <input id="escribe" type="text" placeholder="Escribe la tarea">
+        <button id="subir">Subir Tarea</button>
+        <button id="guardar">Guardar tareas</button>
+    </div>
+
+    <br>
+    <br>
+
+    <div id="tareas"></div>
+
+    <script>
+        let numeroTarea = 0;
+        let boton = document.getElementById("subir");
+        let lugarTareas = document.getElementById("tareas")
+        let guardaar = document.getElementById("guardar")
+
+        boton.addEventListener("click", crearTarea)
+        lugarTareas.addEventListener("click", borrar)
+        guardaar.addEventListener("click", guardar)
+
+        function getNumero(){
+            return numeroTarea;
+        }
+
+        function sumarNumero(){
+            numeroTarea = numeroTarea + 1;
+        }
+
+        function crearTarea(){
+            let campoTexto = document.getElementById("escribe");
+            let divTareas = document.getElementById("tareas")
+
+            let div = document.createElement("div")
+            div.setAttribute("class", "pepino")
+            let parrafo = document.createElement("p")
+            let texto = document.createTextNode(campoTexto.value)
+            parrafo.setAttribute("class", "none")
+            parrafo.setAttribute("id", "tareaNueva")
+            let boton = document.createElement("button")
+            let textoboton = document.createTextNode("Borrar")
+            let br = document.createElement("br")
+
+            parrafo.appendChild(texto)
+            boton.appendChild(textoboton)
+            div.appendChild(parrafo)
+            div.appendChild(boton)
+            divTareas.appendChild(div)
+            divTareas.appendChild(br)
+
+            campoTexto.value = ""
+        }
+
+        function borrar(event){
+            let nodoCLick;
+
+            if(event){
+                nodoCLick = event.target;
+
+                if(nodoCLick.nodeName == "BUTTON"){
+                    let padre = nodoCLick.parentNode
+                    let padreDelPadre = nodoCLick.parentNode.parentNode
+                    let primerHijo = nodoCLick.parentNode.firstElementChild
+                    let ultimoHijo = nodoCLick.parentNode.lastElementChild
+
+                    padre.removeChild(primerHijo)
+                    padre.removeChild(ultimoHijo)
+                    padreDelPadre.removeChild(padre)
+                }
+                else if(nodoCLick.nodeName == "P"){
+                    if(nodoCLick.className != "hecho"){
+                        nodoCLick.className = "hecho"
+                    }
+                    else{
+                        nodoCLick.className = "none"
+                    }   
+                } 
+            }
+        }
+
+
+        function guardar(){
+            let almacenar = []
+            let misTareas = document.querySelectorAll("#tareaNueva")
+
+            for(let i = 0; i < misTareas.length; i++){
+                almacenar.push(misTareas[i].textContent)
+            }
+
+            localStorage.setItem("TareasGuardadas", almacenar)
+            alert("Ha almacenado " + localStorage.getItem("TareasGuardadas") + " Y mide " + localStorage.getItem("TareasGuardadas").length)
+
+            let recogerTareas = localStorage.getItem("TareasGuardadas")
+            let resultado = ""
+            let tareasRecogidas = []
+
+            for(let i = 0; i < recogerTareas.length; i++){
+                if(recogerTareas[i] == ","){
+                    tareasRecogidas.push(resultado)
+                    resultado = ""
+                }
+                else if(i == (recogerTareas.length - 1)){
+                    resultado += recogerTareas[i]
+                    tareasRecogidas.push(resultado)
+                }
+                else{
+                    resultado += recogerTareas[i]
+                }
+            }
+
+            alert(tareasRecogidas[0])
+            alert(tareasRecogidas[1])
+
+
+        }
+
+    </script>
+
+</body>
+</html>
